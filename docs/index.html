@@ -335,6 +335,7 @@ $q.addEventListener("input", function () {
 $q.addEventListener("keydown", function (e) {
   if (e.key === "Escape") { $q.value = ""; state.q = ""; render(); }
 });
+window.addEventListener("focus", function () { $q.focus(); $q.select(); });
 document.addEventListener("keydown", function (e) {
   if (e.key === "/" && document.activeElement !== $q) { e.preventDefault(); $q.focus(); $q.select(); }
 });
