@@ -12,13 +12,15 @@
 
 `docs/index.html`：按“我要干什么”分类浏览，或者直接搜。搜索同时匹配命令、作用和说法，支持命令名拼错（`tial` 能找到 `tail`）和中文描述（“看最后几行”）。
 
-改了笔记之后重新生成数据：
+push 到 main 后，GitHub Actions（`.github/workflows/pages.yml`）会自动运行 `tools/build.py` 生成 `docs/data.js` 并发布，不用手动 build。`data.js` 是生成出来的，不进 Git。
+
+想在本地预览或检查笔记格式，也可以自己跑：
 
 ```bash
 python3 tools/build.py
 ```
 
-脚本会检查每条有没有作用、说法、分类，分类是否在下面的列表里；有问题会列出来并以退出码 1 结束。然后把笔记和 `docs/data.js` 一起提交。
+脚本会检查每条有没有作用、说法、分类，分类是否在下面的列表里；有问题会列出来并以退出码 1 结束，这时 Actions 也会失败，网页保持上一版。
 
 ## 目录
 
@@ -46,6 +48,7 @@ python3 tools/build.py
 | `windows/01-powershell.md` | PowerShell、scp、任务计划程序 |
 | `tools/build.py` | 从笔记生成 `docs/data.js` |
 | `docs/` | 速查网页 |
+| `.github/workflows/pages.yml` | 自动生成并发布速查网页 |
 
 ## 条目格式
 
