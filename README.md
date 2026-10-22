@@ -48,7 +48,7 @@ python3 tools/build.py
 | `windows/01-powershell.md` | PowerShell、scp、任务计划程序 |
 | `tools/build.py` | 从笔记生成 `docs/data.js` |
 | `tools/git-guard.py` | 提交前检查钩子（pre-commit / commit-msg），拦 IP、明文密码、私钥、大文件、venv、.db、.env 和含糊的提交信息 |
-| `docs/` | 速查网页 |
+| `docs/` | 速查网页；`docs/compose.html` 是 Compose 可视化和体检 |
 | `.github/workflows/pages.yml` | 自动生成并发布速查网页 |
 
 ## 条目格式
