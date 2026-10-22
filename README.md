@@ -26,7 +26,7 @@
 | `sql/02-advanced.md` | 子查询、窗口函数、CTE、UNION ALL、REGEXP、函数 |
 | `sql/03-schema.md` | 约束、事务、索引、mysqldump、数据检查 |
 | `sql/04-sqlite.md` | SQLite 专有 |
-| `python/01-env.md` | venv、os.environ、pathlib、logging |
+| `python/01-env.md` | venv、环境变量、异常、datetime、logging、pathlib |
 | `python/02-scraping.md` | requests、BeautifulSoup、文本清洗 |
 | `python/03-db.md` | pymysql、sqlite3、SQLAlchemy |
 | `python/04-pandas.md` | pandas |
@@ -56,7 +56,7 @@
 
 ## 分类
 
-看文件、磁盘空间、查系统信息、改文件内容、写脚本、定时任务、服务和日志、查进程和端口、测网络连通、远程登录和传文件、Git 日常、Git 分支和远程、容器操作、构建镜像、Compose 编排、SQL 查询、SQL 改数据、建表和约束、SQLite、Python 环境、爬网页、Python 连数据库、pandas 处理表格、画图、Windows 命令、任务计划
+看文件、磁盘空间、查系统信息、改文件内容、写脚本、定时任务、服务和日志、查进程和端口、测网络连通、远程登录和传文件、Git 日常、Git 分支和远程、容器操作、构建镜像、Compose 编排、SQL 查询、SQL 改数据、建表和约束、SQLite、Python 环境、Python 写脚本、爬网页、Python 连数据库、pandas 处理表格、画图、Windows 命令、任务计划
 
 ## 项目
 
