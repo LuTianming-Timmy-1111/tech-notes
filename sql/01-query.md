@@ -96,3 +96,31 @@ FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT
 - 分类：SQL 查询
 - 项目：练习：每个学生选了几门课
 - 坑：没选课的学生右表是 NULL，`COUNT(*)` 会数成 1，`COUNT(sc.cid)` 才是 0
+
+### `INSERT ... ON CONFLICT(列) DO NOTHING`
+
+- 作用：只在**指定列**冲突（主键重复）时跳过；`NOT NULL` 等其他约束被违反照样报错。`INSERT OR IGNORE` 会把所有约束冲突都悄悄吞掉
+- 说法：重复的跳过；去重插入；只忽略主键重复；OR IGNORE 和 ON CONFLICT 区别
+- 分类：SQL 改数据
+- 项目：Steam：评论表用它，数据有问题时能报出来，而不是每天悄悄少几行
+
+### SQLite 没有布尔类型
+
+- 作用：用 `INTEGER` 存 1/0；`SUM(列)` 就是“是”的个数，`AVG(列)` 就是比例
+- 说法：SQLite 存布尔；true false 怎么存；算比例
+- 分类：SQLite
+- 项目：Steam：`voted_up` 1 好评 0 差评，`SUM(voted_up)` 是好评数
+
+### 外键指向 `UNIQUE` 列 / 默认不检查
+
+- 作用：`REFERENCES 表(列)` 可以指向主键或 `UNIQUE` 列；SQLite 默认不检查外键（要 `PRAGMA foreign_keys = ON`），不检查时插入不存在的值不报错，但之后 JOIN 时那些行会消失
+- 说法：外键关联；外键不生效；JOIN 后行数变少
+- 分类：建表和约束
+- 项目：Steam：`review.app_id REFERENCES game(app_id)`；规则是要采哪款游戏的评论，先把它加进 `game` 表
+
+### 时间存成 Unix 时间戳（`INTEGER`）
+
+- 作用：从 1970-01-01 00:00 UTC 起的秒数，和时区无关，比较、相减方便；缺点是人看不懂，分析时再换算。采集时原样存，不在采集环节做时区转换
+- 说法：时间怎么存；时间戳还是文本；存时间的列用什么类型
+- 分类：建表和约束
+- 项目：Steam：`review.created` 存时间戳；`player_count.collected_at` 存 UTC 文本，两种都用过

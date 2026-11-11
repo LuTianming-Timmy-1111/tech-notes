@@ -161,3 +161,59 @@
 - 分类：Python 写脚本
 - 项目：Steam：`sorted(BACKUP_DIR.glob("steam-*.db"))` 排序后 `[:-7]` 是要删的旧备份，`[-1]` 是最新的一份
 - 坑：文件名里日期是 `YYYYMMDD`，按字符串排序就等于按时间排序
+
+### `sys.argv`
+
+- 作用：命令行参数列表，`sys.argv[0]` 是脚本名，`[1]` 起是参数，都是**字符串**（页数要 `int()`）；取之前先判断 `len(sys.argv) > 1`，否则 `IndexError`
+- 说法：读命令行参数；脚本带参数；区分运行模式
+- 分类：Python 写脚本
+- 项目：Steam：`collect_reviews.py backfill 50` 进补历史模式、翻 50 页；`main()` 负责把命令行翻译成参数，`collect()` 只认传进来的参数
+
+### `值1 if 条件 else 值2`
+
+- 作用：一行写的 if-else，返回其中一个值
+- 说法：三元表达式；一行 if else；有就用没有就默认
+- 分类：Python 写脚本
+- 项目：Steam：`start = cursor_file.read_text() if cursor_file.exists() else "*"`
+
+### `raise SystemExit("消息")`
+
+- 作用：直接退出并只打印这句话，不打 Traceback，退出码 1；比让程序崩在 `IndexError` 上好懂
+- 说法：友好地退出；报错提示；找不到文件时退出
+- 分类：Python 写脚本
+- 项目：Steam：`common.py` 的 `latest_backup()` 找不到备份时提示“先从 Windows 传一份备份过来”
+
+### `except (A, B) as e`
+
+- 作用：用元组一次接住几种异常，其余的照常往外抛；单独一行 `raise` 把刚接住的异常原样再抛出
+- 说法：只捕获某几种错误；接住多种异常；其他错误继续抛
+- 分类：Python 写脚本
+- 项目：Steam：评论重试只接 `requests.Timeout`、`requests.ConnectionError`，不接 `HTTPError`，否则 429、403 也会被拿去重试
+
+### f-string 常见错
+
+- 作用：漏了开头的 `f`，`{X}` 原样输出；有 `f` 但漏了花括号，变量名当成普通文字。都不报错
+- 说法：f-string 没替换；变量没填进去；文件名不对
+- 分类：Python 写脚本
+- 项目：Steam：`f"review_cursor_APP_ID.txt"` 漏了花括号，生成了错名字的 cursor 文件，补历史从头开始翻
+
+### `logging.info("a", x)` 不会拼接
+
+- 作用：后面的参数被当成 `%` 格式化的填充值，字符串里没有 `%s` 时报 `--- Logging error ---`，这一行日志丢失但程序不崩；用 f-string。`logging` 默认写 stderr，重定向要 `2>&1`
+- 说法：logging 多个参数；日志没打出来；Logging error
+- 分类：Python 写脚本
+- 项目：Steam：`collect_reviews.py` 把 `print` 换成 `logging` 时提醒过
+
+### `Path.write_text()` / `read_text()` 存状态
+
+- 作用：把一个字符串存成文件、读回来；`write_text` 不加换行，`read_text` 读回来原样，没多余 `\n`。手写的文件末尾有换行时要 `.strip()`
+- 说法：保存进度；断点续传；存一个值到文件
+- 分类：Python 写脚本
+- 项目：Steam：补历史每翻一页把 cursor 写进 `data/review_cursor_4115450.txt`，下次接着翻
+
+### 同目录 `import` 自己的模块
+
+- 作用：运行脚本时，Python 会把**脚本所在目录**加进搜索路径，所以同目录的 `common.py` 能直接 `from common import ...`；用 `python -c` 测试时要先 `cd` 进那个目录
+- 说法：导入自己写的文件；公共模块；抽出重复代码
+- 分类：Python 写脚本
+- 项目：Steam：`analysis/common.py`（`load`、`load_reviews`、`setup_font`、`LAUNCH`），03–07 都从它导入

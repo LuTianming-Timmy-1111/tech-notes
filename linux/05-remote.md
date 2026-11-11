@@ -105,3 +105,31 @@
 - 说法：测接口；请求一下看返回；测网站通不通
 - 分类：测网络连通
 - 项目：Steam：在服务器上直接请求 Steam 接口，确认能访问
+
+### `curl -i 网址`
+
+- 作用：输出里带上响应头，第一行是状态码（`200` 成功、`302` 跳转、`429` 限流……）；和 `-I` 不同：`-I` 只发 HEAD 请求、只拿头，`-i` 是正常请求、头和内容都要；`-s` 不显示进度条
+- 说法：看状态码；看响应头；接口返回了什么；被跳转了吗
+- 分类：测网络连通
+- 项目：Steam：旧评论接口返回 `302 Moved Temporarily`、跳回商店首页、内容长度 0，才发现接口已停用
+
+### `curl -G 网址 --data-urlencode '参数=值'`
+
+- 作用：`--data-urlencode` 自动把特殊字符（`{`、`"`、`[`）编码成网址能用的形式，`-G` 把它拼到 `?` 后面用 GET 发送；JSON 外面用单引号，bash 不会动里面的双引号
+- 说法：带 JSON 参数请求接口；参数要编码；GET 带复杂参数
+- 分类：测网络连通
+- 项目：Steam：新评论接口 `IUserReviewsService/GetAppReviews` 的参数要通过 `input_json` 传
+
+### `curl -A "Mozilla/5.0"`
+
+- 作用：设置 User-Agent，假装是浏览器；网页防爬时有用，官方 API 一般不需要
+- 说法：伪装浏览器；改 User-Agent；被网站拦了
+- 分类：测网络连通
+- 项目：Steam：排查评论接口 302 时试过，没用，真正原因是接口停用
+
+### `python3 -m json.tool --no-ensure-ascii`
+
+- 作用：把一整行 JSON 排版成缩进格式；`--no-ensure-ascii` 让中文正常显示，不转成 `\u6e38` 这种编号
+- 说法：格式化 JSON；JSON 看不清；中文显示成 \u
+- 分类：测网络连通
+- 项目：Steam：`curl ... | python3 -m json.tool --no-ensure-ascii | grep '"review"'` 看评论原文

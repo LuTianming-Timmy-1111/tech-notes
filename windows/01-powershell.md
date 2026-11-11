@@ -99,3 +99,80 @@
 - 分类：任务计划
 - 项目：Steam：`pull.ps1` 全量下载 `steam-*.db`，加 `-p` 保留时间、`-q` 不显示进度条
 - 坑：BatchMode 下要密码时直接失败，退出码 255，从 `pull.log` 里一眼能看出来
+
+### `Get-ChildItem 路径 -Recurse -Filter 名字`
+
+- 作用：递归找文件；`-Directory` 只找文件夹；`-ErrorAction SilentlyContinue` 跳过读不了的（只在确定无所谓时用）
+- 说法：在 Windows 上找文件；搜文件夹；find 的 PowerShell 版
+- 分类：Windows 命令
+- 项目：小肥鱼：在 `D:\Coopanion` 下找 `sticker-index.json`、扩展的包目录、NapCat 日志目录
+
+### `Select-String -Pattern "A|B"`
+
+- 作用：在文件**内容**里搜，PowerShell 版 `grep`；默认**不区分大小写**；`-Context 前,后` 看上下文，`-List` 每个文件只报第一处；接在 `Get-ChildItem -Recurse` 后面可以搜整个目录
+- 说法：在文件里搜内容；PowerShell grep；查代码里有没有某个词
+- 分类：Windows 命令
+- 项目：小肥鱼：在 QQ 扩展源码里搜 `sticker-index`，找到表情包目录的配置方式
+
+### `ForEach-Object { $_... }`
+
+- 作用：对管道里每个结果执行一段代码，`$_` 是当前这一个；常用来改输出格式，比如去掉长路径前缀
+- 说法：对每个结果处理；PowerShell 循环；简化输出
+- 分类：Windows 命令
+- 项目：`ForEach-Object { $_.Path.Replace($qf, "") + " : " + $_.LineNumber }`
+
+### `$f = (Get-ChildItem ... | Select-Object -Last 1).FullName`
+
+- 作用：取最新的那个文件的完整路径存进变量，下一行直接用，不用手抄文件名
+- 说法：最新的文件；传最新备份；变量存路径
+- 分类：Windows 命令
+- 项目：Steam：`scp $f root@虚拟机:/root/steam-tracker/backups/`
+
+### `Test-Path` / `New-Item -ItemType Directory`
+
+- 作用：判断路径存不存在（True/False）；新建文件夹，逗号隔开可以一次建多个
+- 说法：文件在不在；新建文件夹
+- 分类：Windows 命令
+- 项目：小肥鱼：确认 Chrome 装在默认位置；建 `D:\coo-stickers`、`D:\coo-images`
+
+### `Test-NetConnection 主机 -Port 端口`
+
+- 作用：测某个端口通不通，看最后一行 `TcpTestSucceeded`
+- 说法：端口通不通；ssh 连不上排查；telnet 的替代
+- 分类：Windows 命令
+- 项目：虚拟机连不上时：ping 通、22 端口通，最后发现是刚重启
+
+### `curl` 和 `curl.exe`
+
+- 作用：PowerShell 里单写 `curl` 是 `Invoke-WebRequest` 的别名，参数完全不同；要用真正的 curl 必须带 `.exe`
+- 说法：PowerShell curl 报错；curl 参数不认
+- 分类：Windows 命令
+- 项目：Steam：在 Windows 上测评论接口
+
+### `& "带空格的路径\程序.exe" 参数`
+
+- 作用：运行路径里有空格的程序，前面要加 `&`
+- 说法：运行带空格路径的程序；Program Files 里的程序
+- 分类：Windows 命令
+- 项目：`& "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe" list` 看虚拟机是否在运行
+
+### `Get-Process 名字 | Where-Object Path -like "*关键词*" | Stop-Process`
+
+- 作用：按路径筛选进程再结束，只关特定位置的那个，不误伤同名程序
+- 说法：结束进程；杀掉残留进程；只关某个路径下的程序
+- 分类：Windows 命令
+- 项目：小肥鱼：关掉 NapCat 黑窗口后 QQ 进程残留，导致“已登录，无法重复登录”；只关 NapCat 的 QQ，不动平时登大号的 QQ
+
+### 两个时区的时间相减：先都转 UTC
+
+- 作用：`[TimeZoneInfo]::ConvertTimeToUtc($t, [TimeZoneInfo]::FindSystemTimeZoneById("China Standard Time"))` 和 `(Get-Date).ToUniversalTime()` 再相减；`Get-Date -Format "... zzz"` 时间戳自带时区
+- 说法：时区不同时间差；改了系统时区；北京时间转 UTC
+- 分类：Windows 命令
+- 项目：Steam：电脑改成纽约时区后，`pull.ps1` 拿北京时间的日志直接和本地时间相减会差 13 小时、每小时误报
+
+### `Get-ScheduledTask` / `Start-ScheduledTask` / `Get-ScheduledTaskInfo`
+
+- 作用：查看任务的操作（`.Actions`）、手动触发、看上次运行时间和结果码。经 `wscript` 启动的任务，`LastTaskResult` 是 wscript 的退出码，永远是 0，成功与否要看脚本自己的日志
+- 说法：任务计划用什么启动；手动运行任务；任务上次结果
+- 分类：任务计划
+- 项目：Steam：`steam-backup-pull` 改成 `wscript.exe` + `run-hidden.vbs` 启动后不再闪窗口，以 `pull.log` 为准

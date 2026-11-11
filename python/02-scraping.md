@@ -93,3 +93,31 @@
 - 说法：pip 证书报错；SSL 错误装不上包
 - 分类：Python 环境
 - 项目：豆瓣早期在 CentOS 7 的 Python 3.6 上装包
+
+### `resp.raise_for_status()` 与状态码
+
+- 作用：状态码不是 2xx 就抛 `HTTPError`。2xx 成功、3xx 跳转、4xx 请求方的问题、5xx 服务器的问题。429 是限流，等一会儿能好；403 禁止、400 参数错，等多久都不会好，要大声报错
+- 说法：检查请求成没成功；HTTP 状态码；429 和 403 区别；被限流
+- 分类：爬网页
+- 项目：Steam：评论接口 429 时记 WARNING、保存进度、正常退出；其他 HTTP 错误照样抛出，让健康检查能看到
+
+### 只对超时和连接错误重试
+
+- 作用：`requests.RequestException` 是所有请求异常的父类，包括 `HTTPError`；重试时只接 `Timeout`、`ConnectionError`，否则 429、403 也会被盲目重试
+- 说法：网络抖动自动重试；超时重试；哪些错误要重试
+- 分类：爬网页
+- 项目：Steam：补历史因 TLS 握手超时、读取超时退出过两次，加了 `fetch_with_retry`（等 10 秒、最多 3 次）
+
+### cursor 翻页
+
+- 作用：接口返回一个 `cursor`，下一页带上它。按“最新”排序时新内容不断插到前面，页码会漂移，cursor 记的是位置不受影响；翻到底时返回空列表或同一个 cursor
+- 说法：翻页；分页接口；下一页怎么拿；断点续翻
+- 分类：爬网页
+- 项目：Steam：评论按最新排序翻页，每日增量“一页全是存过的就停”，补历史不因存过而停
+
+### Service 接口的 `input_json`
+
+- 作用：Steam 的 Service 类接口把所有参数写成一段 JSON，放在 `input_json` 一个参数里；`json.dumps(字典)` 转字符串，`requests` 自动 URL 编码
+- 说法：参数是 JSON；Steam 新接口怎么传参
+- 分类：爬网页
+- 项目：Steam：旧的 `store.steampowered.com/appreviews` 10/22 停用，换成 `api.steampowered.com/IUserReviewsService/GetAppReviews/v1/`

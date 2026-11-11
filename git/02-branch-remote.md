@@ -83,3 +83,24 @@
 - 说法：更新代码；同步最新版本；服务器拉代码
 - 分类：Git 分支和远程
 - 项目：Steam：虚拟机 push 后，服务器 `git pull`；`data/`、`logs/`、`venv/` 被忽略，不受影响
+
+### `git branch -D 分支名`
+
+- 作用：**强制**删除分支，不管有没有合并；未合并的提交之后很难找回。平时用 `-d`（未合并会拒绝），确定要放弃一个分支时才用 `-D`
+- 说法：强制删分支；放弃这个分支；删没合并的分支
+- 分类：Git 分支和远程
+- 项目：豆瓣：`charts` 合并后用的是 `-d`
+
+### `git push origin --delete 分支名`
+
+- 作用：删掉 GitHub 上的远程分支；只删“分支”这个标签，已合并的提交都在 master 里
+- 说法：删除远程分支；GitHub 上的分支不要了
+- 分类：Git 分支和远程
+- 项目：豆瓣：`charts` 推上去做过备份，合并进 master 后删掉
+
+### 主分支叫 `main` 还是 `master`
+
+- 作用：新版 Git 和 GitHub 默认叫 `main`，老版本 Git 默认叫 `master`，不同仓库可能不一样；不确定就 `git branch` 看。在分支 A 上 `git merge A` 会显示 `Already up-to-date`，什么都没发生
+- 说法：checkout master 报错；pathspec did not match；主分支叫什么
+- 分类：Git 分支和远程
+- 项目：Steam 是 `main`，豆瓣、dotfiles 是 `master`；`git checkout master` 报 `pathspec 'master' did not match`
